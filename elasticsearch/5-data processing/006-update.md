@@ -26,4 +26,4 @@ POST earthquakes/_update_by_query
       }
     }
   }
-}f
+}

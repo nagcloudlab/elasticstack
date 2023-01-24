@@ -8,6 +8,7 @@ services:
     environment:
       - cluster.name=elastic-cluster-earth
       - node.name=esnode-earth
+      - discovery.type=single-node
       - bootstrap.memory_lock=true
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
     ulimits:
@@ -41,6 +42,7 @@ services:
     container_name: esnode-mars7.14.1
     environment:
       - cluster.name=elastic-cluster-mars
+      - discovery.type=single-node
       - node.name=esnode-mars
       - bootstrap.memory_lock=true
       - ES_JAVA_OPTS=-Xms512m -Xmx512m

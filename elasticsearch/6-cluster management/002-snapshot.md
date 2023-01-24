@@ -17,6 +17,7 @@ PUT _snapshot/cluster/backup_1
 
 GET _snapshot/cluster/backup_1
 
+PUT 
 
 PUT _slm/policy/daily_snapshot
 {
