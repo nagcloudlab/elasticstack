@@ -1,0 +1,10 @@
+Exception in thread "main" com.myproject.module.MyProjectFooBarException: The number of FooBars cannot be zero
+    at com.myproject.module.MyProject.anotherMethod(MyProject.java:19)
+    at com.myproject.module.MyProject.someMethod(MyProject.java:12)
+    at com.myproject.module.MyProject.main(MyProject.java:8)
+Caused by: java.lang.ArithmeticException: The denominator must not be zero
+    at org.apache.commons.lang3.math.Fraction.getFraction(Fraction.java:143)
+    at com.myproject.module.MyProject.anotherMethod(MyProject.java:17)
+    ... 2 more
+
+

@@ -1,0 +1,201 @@
+# 7 Elasticsearch node, 1 Kibana instance - (v8.5.0)
+
+version: '3'
+services:
+  esnode1:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.0
+    container_name: esnode1-8.5.0
+    environment:
+      - node.name=esnode1
+      - cluster.name=elastic-cluster
+      - node.roles=master
+      - cluster.initial_master_nodes=esnode1
+      - discovery.seed_hosts=esnode2
+      - xpack.security.enabled=false
+      - bootstrap.memory_lock=true
+      - path.repo=/usr/share/elasticsearch/backups
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esnode1-data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - elastic-net
+  esnode2:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.0
+    container_name: esnode2-8.5.0
+    environment:
+      - node.name=esnode2
+      - cluster.name=elastic-cluster
+      - node.roles=data_content
+      - cluster.initial_master_nodes=esnode1
+      - discovery.seed_hosts=esnode1
+      - xpack.security.enabled=false
+      - bootstrap.memory_lock=true
+      - path.repo=/usr/share/elasticsearch/backups
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esnode2-data:/usr/share/elasticsearch/data
+    ports:
+      - 9202:9200
+    networks:
+      - elastic-net
+  esnode3:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.0
+    container_name: esnode3-8.5.0
+    environment:
+      - node.name=esnode3
+      - cluster.name=elastic-cluster
+      - node.roles=data_hot
+      - cluster.initial_master_nodes=esnode1
+      - discovery.seed_hosts=esnode1
+      - xpack.security.enabled=false
+      - bootstrap.memory_lock=true
+      - path.repo=/usr/share/elasticsearch/backups
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esnode3-data-hot:/usr/share/elasticsearch/data
+    ports:
+      - 9203:9200
+    networks:
+      - elastic-net    
+  esnode4:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.0
+    container_name: esnode4-8.5.0
+    environment:
+      - node.name=esnode4
+      - cluster.name=elastic-cluster
+      - node.roles=data_warm
+      - cluster.initial_master_nodes=esnode1
+      - discovery.seed_hosts=esnode1
+      - xpack.security.enabled=false
+      - bootstrap.memory_lock=true
+      - path.repo=/usr/share/elasticsearch/backups
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esnode4-data-warm:/usr/share/elasticsearch/data
+    ports:
+      - 9204:9200
+    networks:
+      - elastic-net   
+  esnode5:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.0
+    container_name: esnode5-8.5.0
+    environment:
+      - node.name=esnode5
+      - cluster.name=elastic-cluster
+      - node.roles=[]
+      - cluster.initial_master_nodes=esnode1
+      - discovery.seed_hosts=esnode1
+      - xpack.security.enabled=false
+      - bootstrap.memory_lock=true
+      - path.repo=/usr/share/elasticsearch/backups
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esnode5-co:/usr/share/elasticsearch/data
+    ports:
+      - 9205:9200
+    networks:
+      - elastic-net 
+  esnode6:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.0
+    container_name: esnode6-8.5.0
+    environment:
+      - node.name=esnode6
+      - cluster.name=elastic-cluster
+      - node.roles=data_cold
+      - cluster.initial_master_nodes=esnode1
+      - discovery.seed_hosts=esnode1
+      - xpack.security.enabled=false
+      - bootstrap.memory_lock=true
+      - path.repo=/usr/share/elasticsearch/backups
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esnode6-data-cold:/usr/share/elasticsearch/data
+    ports:
+      - 9206:9200
+    networks:
+      - elastic-net
+  esnode7:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.0
+    container_name: esnode7-8.5.0
+    environment:
+      - node.name=esnode7
+      - cluster.name=elastic-cluster
+      - node.roles=ingest
+      - cluster.initial_master_nodes=esnode1
+      - discovery.seed_hosts=esnode1
+      - xpack.security.enabled=false
+      - bootstrap.memory_lock=true
+      - path.repo=/usr/share/elasticsearch/backups
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esnode7-ingest:/usr/share/elasticsearch/data
+    ports:
+      - 9207:9200
+    networks:
+      - elastic-net    
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.5.0
+    container_name: kibana8.5.0
+    environment:
+      - elasticsearch.url=http://elasticsearch:9200
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 5601:5601
+    networks:
+      - elastic-net
+    links:
+      - esnode1:elasticsearch
+
+volumes:
+  esnode1-data:
+    driver: local
+  esnode2-data:
+    driver: local
+  esnode3-data-hot:
+    driver: local  
+  esnode4-data-warm:
+    driver: local
+  esnode5-co:
+    driver: local    
+  esnode6-data-cold:
+    driver: local    
+  esnode7-ingest:
+    driver: local    
+  
+
+networks:
+  elastic-net:

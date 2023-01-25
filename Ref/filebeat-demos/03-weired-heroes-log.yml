@@ -1,0 +1,20 @@
+filebeat.inputs:
+- type: log
+  paths:
+  - /home/nag/elasticstack/filebeat-demos/03-weired-heroes-log.log
+  multiline:
+    pattern: '^\d{4}-\d{2}-\d{2}\b'
+    match: after
+    negate: true
+
+processors:
+- add_locale: ~
+
+output.elasticsearch:
+  hosts: ["localhost:9200"]
+  index: "heroes"
+  pipeline: "heroes-pipeline"
+
+setup:
+  template.enabled: false
+  ilm.enabled: false

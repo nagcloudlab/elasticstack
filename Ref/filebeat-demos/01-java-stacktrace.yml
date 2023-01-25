@@ -1,0 +1,13 @@
+
+filebeat.inputs:
+
+- type: log
+  enabled: true
+  paths:
+  - /home/nag/elasticstack/filebeat-demo/01-java-stacktrace.log
+
+  multiline:
+    pattern: '^[[:space:]]+(at|\.{3})\b|^Caused by:'
+    match: after
+    negate: false
+

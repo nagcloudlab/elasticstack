@@ -1,0 +1,14 @@
+
+filebeat.inputs:
+
+- type: log
+  enabled: true
+  paths:
+  - /home/nag/elasticstack/filebeat-demos/02-structured-event.yml
+
+  multiline:
+    pattern: 'Start Event'
+    match: after
+    negate: false
+    flush_pattern: 'End Event'
+
